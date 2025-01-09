@@ -38,8 +38,6 @@ int server_handshake(int *to_client) {
     while (read(from_client, &pid, sizeof(int)) <= 0)
         ;
 
-    printf("Received syn: %d\n", pid);
-
     char buffer[HANDSHAKE_BUFFER_SIZE];
     sprintf(buffer, "%d", pid);
 
@@ -49,13 +47,9 @@ int server_handshake(int *to_client) {
     int random = rand();
     write(*to_client, &random, sizeof(int));
 
-    printf("Sent syn_ack: %d\n", random);
-
     int ack = 0;
     while (read(from_client, &ack, sizeof(int)) <= 0)
         ;
-
-    printf("Received ack: %d\n", ack);
 
     if (ack != random + 1) {
         printf("Handshake failed\n");
@@ -83,8 +77,6 @@ int client_handshake(int *to_server) {
     int pid = getpid();
     write(*to_server, &pid, sizeof(int));
 
-    printf("Sent syn: %d\n", pid);
-
     int from_server = open(buffer, O_RDONLY);
     remove(buffer);
 
@@ -92,12 +84,8 @@ int client_handshake(int *to_server) {
     while (read(from_server, &syn_ack, sizeof(int)) <= 0)
         ;
 
-    printf("Received syn_ack: %d\n", syn_ack);
-
     syn_ack++;
     write(*to_server, &syn_ack, sizeof(int));
-
-    printf("Sent ack: %d\n", syn_ack);
 
     return from_server;
 }

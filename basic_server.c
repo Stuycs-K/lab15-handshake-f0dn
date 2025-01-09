@@ -1,24 +1,19 @@
 #include "pipe_networking.h"
-#include <ctype.h>
+#include <stdio.h>
+#include <time.h>
+#include <unistd.h>
 
 int main() {
+    srand(time(NULL));
+
     int to_client;
     int from_client;
 
     from_client = server_handshake(&to_client);
 
-    char buffer[BUFFER_SIZE];
     while (1) {
-        while (read(from_client, buffer, sizeof(buffer)) <= 0)
-            ;
-        printf("Received: %s\n", buffer);
-
-        char *p = buffer;
-        while (*p) {
-            if (isalpha(*p))
-                *p = tolower(*p);
-            p++;
-        }
-        write(to_client, buffer, sizeof(buffer));
+        int r = rand() % 100;
+        write(to_client, &r, sizeof(int));
+        sleep(1);
     }
 }

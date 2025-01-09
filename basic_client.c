@@ -6,16 +6,10 @@ int main() {
 
     from_server = client_handshake(&to_server);
 
-    char buffer[BUFFER_SIZE];
+    int rand = 0;
     while (1) {
-        printf("Enter a message: ");
-        fgets(buffer, sizeof(buffer), stdin);
-        buffer[strlen(buffer) - 1] = 0;
-
-        write(to_server, buffer, sizeof(buffer));
-
-        while (read(from_server, buffer, sizeof(buffer)) <= 0)
+        while (read(from_server, &rand, sizeof(int)) <= 0)
             ;
-        printf("Received: %s\n", buffer);
+        printf("Random number: %d\n", rand);
     }
 }
